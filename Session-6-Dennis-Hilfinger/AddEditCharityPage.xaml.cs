@@ -8,12 +8,14 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
     bool IsEditPage = false;
     DispatcherTimer timer = new DispatcherTimer();
     Charity? charityToEdit;
+    string CurrentLogoImage;
     public AddEditCharityPage()
     {
         InitializeComponent();
         timer.Interval = TimeSpan.FromSeconds(1);
         timer.Tick += timerTick;
         timer.Start();
+        this.BindingContext = this;
     }
 
     private void timerTick(object? sender, object e)
@@ -52,7 +54,7 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
         FillData();
     }
 
-    private void FillData()
+    private async void FillData()
     {
         using (var db = new MarathonDB())
         {
@@ -60,23 +62,63 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
             {
                 NameEntry.Text = charityToEdit.CharityName;
                 DescriptionEntry.Text = charityToEdit.CharityDescription;
+                
+                //Approach to solve this: save all Charity Images (even MauiImages from app) in FileSystem.AppDataDirectory
+                CurrentLogoImg.Source = ImageSource.FromFile(charityToEdit.CharityLogo);
             }
         }
     }
 
     private async void SaveData(object sender, EventArgs e)
     {
-        await DisplayAlert("Info", "Feature not implemented yet", "Ok");
         using (var db = new MarathonDB())
         {
             if (IsEditPage)
             {
-                /*Üvar charity = db.Charities.FirstOrDefault();
-                
+                var charity = db.Charities.FirstOrDefault(ch => ch.CharityId == charityToEdit.CharityId);
+
+                var charityName = NameEntry.Text;
+                if (string.IsNullOrEmpty(charityName))
+                {
+                    await DisplayAlert("Info", "Charity Name can not be empty.", "Ok");
+                    return;
+                }
+                charity.CharityName = charityName;
+
+                var charityDescription = DescriptionEntry.Text;
+                if (string.IsNullOrEmpty(charityDescription))
+                {
+                    await DisplayAlert("Info", "Charity Description can not be empty.", "Ok");
+                    return;
+                }
+                charity.CharityDescription = charityDescription;
+
+                var newLogoPath = LogoFileEntry.Text;
+                if (!string.IsNullOrEmpty(newLogoPath))
+                {
+                    try
+                    {
+                        if (Path.Exists(newLogoPath))
+                        {
+                            var filename = Path.GetFileName(newLogoPath);
+                            var destPath = Path.Combine(FileSystem.AppDataDirectory, filename);
+                            File.Copy(newLogoPath, destPath);
+                            charity.CharityLogo = filename;
+                            CurrentLogoImg.Source = ImageSource.FromFile(destPath);
+                        } else
+                        {
+                            await DisplayAlert("Error", "File path for new logo does not exist", "Ok");
+                        }
+                    }
+                    catch
+                    {
+                        await DisplayAlert("Error", "Something went wrong when setting new logo.", "Ok");
+                    }
+                }
 
                 db.Update(charity);
                 db.SaveChanges();
-                await DisplayAlert("Success", "Charity updated successfully.", "OK");*/
+                await DisplayAlert("Success", "Charity updated successfully.", "OK");
             }
             else
             {
@@ -91,6 +133,16 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
         }
     }
 
+
+    private async void ChooseLogo(object sender, EventArgs e)
+    {
+        var file = await FilePicker.PickAsync(PickOptions.Images);
+        if (file != null)
+        {
+            LogoFileEntry.Text = file.FullPath;
+        }
+        
+    }
     private void Cancel(object sender, EventArgs e)
     {
         Navigation.RemovePage(this);

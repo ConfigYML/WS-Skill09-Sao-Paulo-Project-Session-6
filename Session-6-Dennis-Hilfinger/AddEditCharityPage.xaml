@@ -40,20 +40,49 @@ HorizontalOptions="Fill">
                     Text="Add/Edit charity"
                     HorizontalOptions="Center"
                     FontSize="32"
-                            x:Name="HeadingLabel"/>
-                <HorizontalStackLayout>
-                    <VerticalStackLayout>
+                    x:Name="HeadingLabel"/>
+                <HorizontalStackLayout
+                    WidthRequest="800"
+                    Spacing="100">
+                    <VerticalStackLayout
+                        Spacing="10"
+                        WidthRequest="350">
                         <Label
-                            Text="Name"/>
+                            Text="Name:"/>
                         <Entry
                             x:Name="NameEntry"
-                            Placeholder="Charity Name"/>
-                        <Entry
+                            Placeholder="Charity Name"
+                            Margin="0, 0, 0, 20"/>
+                        <Label
+                            Text="Description:"/>
+                        <Editor
                             x:Name="DescriptionEntry"
                             Placeholder="Description of the Charity"
-                            HeightRequest="300"/>
+                            HeightRequest="250"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout>
+                    <VerticalStackLayout
+                        Spacing="10"
+                        WidthRequest="350">
+                        <Label
+                            Text="Leave the 'logo file' field blank if you do not want to change the logo."/>
+                        <Label
+                            Text="Logo file:"/>
+                        <HorizontalStackLayout Spacing="10">
+                            <Entry
+                            x:Name="LogoFileEntry"
+                            Placeholder="File path"
+                                WidthRequest="250"/>
+                            <Button
+                            Style="{StaticResource ButtonYellow}"
+                            Text="Browse..." 
+                            Clicked="ChooseLogo"/>
+                        </HorizontalStackLayout>
+                        <Label
+                            Text="Current logo:"/>
+                        <Image
+                            Margin="0, 25, 0, 0"
+                            x:Name="CurrentLogoImg"
+                            WidthRequest="200"/>
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
 

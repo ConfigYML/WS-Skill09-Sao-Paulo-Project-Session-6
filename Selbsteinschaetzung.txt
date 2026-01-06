@@ -1,0 +1,1 @@
+Session lief soweit akzeptabel. Allerdings ein bisschen Probleme das geändert Image bei den Charities zu lösen. Außerdem bisher keine Idee, wie das Testing in C# implementiert werden kann (muss recherchiert werden).

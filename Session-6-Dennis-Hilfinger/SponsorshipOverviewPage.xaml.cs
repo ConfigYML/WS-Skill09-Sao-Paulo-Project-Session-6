@@ -77,6 +77,7 @@ public partial class SponsorshipOverviewPage : ContentPage
                     .Where(sp => sp.Registration.CharityId == ch.CharityId)
                     .Sum(sp => sp.Amount);
                 totalSum += sum;
+
                 Charities.Add(new CharityDTO
                 {
                     Filename = ch.CharityLogo,
