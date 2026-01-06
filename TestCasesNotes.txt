@@ -1,0 +1,11 @@
+Login-Testing:
+- Correct credentials
+- Incorrect credentials
+- Partly Correct Credentials
+
+Registration-Testing:
+- Passwords not matching
+- Too short password
+- Blank fields
+- Date of Birth too young
+
