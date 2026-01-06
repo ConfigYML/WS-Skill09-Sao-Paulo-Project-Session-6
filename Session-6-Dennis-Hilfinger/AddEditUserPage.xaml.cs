@@ -1,17 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Printing;
+using System.Threading.Tasks;
+using Windows.Networking.NetworkOperators;
 using Windows.System;
 using Windows.UI.WebUI;
 
 namespace Session_6_Dennis_Hilfinger;
 
-public partial class AddEditUserPage : ContentPage
+public partial class AddEditUserPage : ContentPage, IQueryAttributable
 {
     bool IsEditPage = false;
     DispatcherTimer timer = new DispatcherTimer();
     User? userToEdit;
-
+    Entry emailEntry;
     public AddEditUserPage()
 	{
 		InitializeComponent();
@@ -39,97 +41,179 @@ public partial class AddEditUserPage : ContentPage
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         IsEditPage = (query["PageType"].ToString() == "Edit");
-        userToEdit = (User) query["UserToEdit"];
+        query.TryGetValue("UserToEdit", out object userObj);
+        if (userObj != null)
+        {
+            userToEdit = (User) userObj;
+        }
         
         if (IsEditPage && userToEdit != null)
         {
+            HeadingLabel.Text = "Edit user";
 
-            FillData();
+            Label emailLabel = new Label();
+            emailLabel.Text = userToEdit.Email;
+            DataLayout.Children.Insert(0, emailLabel);
+
         } else
         {
-            Entry emailEntry = new Entry();
-            DataLayout.Children.Add(emailEntry);
+            HeadingLabel.Text = "Add user";
+
+            emailEntry = new Entry();
+            emailEntry.Placeholder = "Email";
+            DataLayout.Children.Insert(0, emailEntry);
         }
+        FillData();
     }
 
     private void FillData()
     {
         using (var db = new MarathonDB())
         {
-            
+            var roles = db.Roles;
+            foreach (var role in roles)
+            {
+                RolePicker.Items.Add(role.RoleName);
+            }
+            if (IsEditPage)
+            {
+                FirstnameEntry.Text = userToEdit.FirstName;
+                LastnameEntry.Text = userToEdit.LastName;
+                var roleIndex = RolePicker.Items
+                    .IndexOf(
+                        RolePicker.Items.FirstOrDefault(r => r.ToString() == userToEdit.Role.RoleName)
+                    );
+                RolePicker.SelectedIndex = roleIndex;
+            }
         }
     }
 
-    private void SaveData(object sender, EventArgs e)
-    {/*
+    private async void SaveData(object sender, EventArgs e)
+    {
         using (var db = new MarathonDB())
         {
-            if (!String.IsNullOrEmpty(FirstnameEntry.Text))
+            if (IsEditPage)
             {
-                user.FirstName = FirstnameEntry.Text.ToString();
-            }
-            if (!String.IsNullOrEmpty(LastnameEntry.Text))
-            {
-                user.LastName = LastnameEntry.Text.ToString();
-            }
-
-            var genders = db.Genders.ToList();
-            var userGender = genders.FirstOrDefault(g => g.Gender1 == GenderPicker.SelectedItem.ToString());
-            var countries = db.Countries.ToList();
-            var userCountry = countries.FirstOrDefault(c => c.CountryName + " - " + c.CountryCode == CountryPicker.SelectedItem.ToString());
-
-            if (CheckBirthdate())
-            {
-                user.Runners.First().DateOfBirth = BirthdatePicker.Date;
-            }
-            else
-            {
-                return;
-            }
-            user.Runners.First().GenderNavigation = userGender;
-            user.Runners.First().Gender = userGender.Gender1;
-            user.Runners.First().CountryCodeNavigation = userCountry;
-            user.Runners.First().CountryCode = userCountry.CountryCode;
-
-            if (!String.IsNullOrEmpty(PasswordEntry.Text) ||
-                !String.IsNullOrEmpty(PasswordAgainEntry.Text))
-            {
-                if (PasswordAgainEntry.Text.ToString() == PasswordEntry.Text.ToString())
+                var user = db.Users.FirstOrDefault(u => u.Email == userToEdit.Email);
+                if (String.IsNullOrEmpty(FirstnameEntry.Text) || 
+                    String.IsNullOrEmpty(LastnameEntry.Text))
                 {
-                    if (CheckPasswordRequirements())
+                    await DisplayAlert("Info", "First Name and Last Name fields can not be empty when saving edited user", "Ok");
+                    return;
+                }
+                user.FirstName = FirstnameEntry.Text.ToString();
+                user.LastName = LastnameEntry.Text.ToString();
+
+                var selectedRole = db.Roles.FirstOrDefault(r => r.RoleName == RolePicker.SelectedItem.ToString());
+                user.Role = selectedRole;
+                user.RoleId = selectedRole.RoleId;
+
+                var password = PasswordEntry.Text;
+                var passwordAgain = PasswordAgainEntry.Text;
+
+                if (!String.IsNullOrEmpty(password) ||
+                !String.IsNullOrEmpty(passwordAgain))
+                {
+                    if (String.IsNullOrEmpty(password) ||
+                        String.IsNullOrEmpty(passwordAgain))
                     {
-                        user.Password = PasswordEntry.Text.ToString();
+                        await DisplayAlert("Info", "Please enter a value for both password fields to change your password.", "OK");
                         return;
+                    }
+                    if (passwordAgain == password)
+                    {
+                        if (CheckPasswordRequirements())
+                        {
+                            user.Password = password;
+                        } else
+                        {
+                            return;
+                        }
                     }
                     else
                     {
+                        await DisplayAlert("Info", "Passwords do not match.", "OK");
                         return;
                     }
                 }
-                else
+
+                db.Update(user);
+                db.SaveChanges();
+                await DisplayAlert("Success", "Profile updated successfully.", "OK");
+            } else
+            {
+                var user = new User();
+
+                var email = emailEntry.Text;
+                if (db.Users.Any(u => u.Email == email))
                 {
-                    DisplayAlert("Error", "Passwords do not match.", "OK");
+                    await DisplayAlert("Info", "This email is already registered as a user. Please choose a different one.", "Ok");
                     return;
                 }
-            }
-            else if (!(String.IsNullOrEmpty(PasswordEntry.Text) && String.IsNullOrEmpty(PasswordAgainEntry.Text)))
-            {
-                DisplayAlert("Error", "Please enter a value for both password fields to change your password.", "OK");
-                return;
-            }
-            db.Update(user);
+                if (String.IsNullOrEmpty(email))
+                {
+                    await DisplayAlert("Info", "Email field can not be empty", "Ok");
+                    return;
+                }
+                user.Email = email;
 
-            var regEvent = db.Runners
-                .Include(r => r.Registrations)
-                .FirstOrDefault(r => r.Email == user.Email)
-                .Registrations.First();
-            var newStatus = db.RegistrationStatuses.FirstOrDefault(st => st.RegistrationStatus1 == RegStatusPicker.SelectedItem.ToString());
-            regEvent.RegistrationStatus = newStatus;
-            db.Update(regEvent);
+                if (String.IsNullOrEmpty(FirstnameEntry.Text) || 
+                    String.IsNullOrEmpty(LastnameEntry.Text))
+                {
+                    await DisplayAlert("Info", "First Name and Last Name fields can not be empty when creating new user", "Ok");
+                    return;
+                }
+                user.FirstName = FirstnameEntry.Text.ToString();
+                user.LastName = LastnameEntry.Text.ToString();
 
-            db.SaveChanges();
-            DisplayAlert("Success", "Profile updated successfully.", "OK");
-        }*/
+                if (RolePicker.SelectedItem == null)
+                {
+                    await DisplayAlert("Info", "A role needs to be selected for the new user", "Ok");
+                    return;
+                }
+                var selectedRole = db.Roles.FirstOrDefault(r => r.RoleName == RolePicker.SelectedItem.ToString());
+                user.Role = selectedRole;
+                user.RoleId = selectedRole.RoleId;
+
+                var password = PasswordEntry.Text;
+                var passwordAgain = PasswordAgainEntry.Text;
+
+                if (!String.IsNullOrEmpty(password) ||
+                !String.IsNullOrEmpty(passwordAgain))
+                {
+                    if (String.IsNullOrEmpty(password) ||
+                        String.IsNullOrEmpty(passwordAgain))
+                    {
+                        await DisplayAlert("Info", "Please enter a value for both password fields to change your password.", "OK");
+                        return;
+                    }
+                    if (passwordAgain == password)
+                    {
+                        if (CheckPasswordRequirements())
+                        {
+                            user.Password = password;
+                        } else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        await DisplayAlert("Info", "Passwords do not match.", "OK");
+                        return;
+                    }
+                } else
+                {
+                    await DisplayAlert("Info", "User needs a password to be registered. Thereby please enter one.", "Ok");
+                    return;
+                }
+
+                db.Users.Add(user);
+                db.SaveChanges();
+                await DisplayAlert("Success", "User created successfully.", "OK");
+                Cancel(null, EventArgs.Empty);
+            }
+        }
     }
 
     private bool CheckPasswordRequirements()

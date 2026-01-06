@@ -77,7 +77,7 @@
                     IsPassword="True" />
                         <Entry
                     x:Name="PasswordAgainEntry"
-                    Placeholder="Password"
+                    Placeholder="Re-enter password"
                     IsPassword="True"/>
                     </VerticalStackLayout>
 
