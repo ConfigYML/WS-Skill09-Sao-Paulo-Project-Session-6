@@ -11,7 +11,7 @@ namespace Session_6_Dennis_Hilfinger;
 
 public partial class ManageCharitiesPage : ContentPage
 {
-    public ObservableCollection<Charity> Charities { get; set; } = new ObservableCollection<Charity>();
+    public ObservableCollection<CharityDTO> Charities { get; set; } = new ObservableCollection<CharityDTO>();
     DispatcherTimer timer = new DispatcherTimer();
 	public ManageCharitiesPage()
 	{
@@ -47,7 +47,17 @@ public partial class ManageCharitiesPage : ContentPage
             var fastList = await db.Charities.ToListAsync();
             foreach(var charity in fastList)
             {
-                Charities.Add(charity);
+                var charityDTO = new CharityDTO()
+                {
+                    CharityObj = charity,
+                    LogoFilePath = Path.Combine(FileSystem.AppDataDirectory, charity.CharityLogo)
+                };
+                if (File.Exists(charityDTO.LogoFilePath))
+                {
+                    await DisplayAlert("Info", "Image found", "OK");
+                }
+                Charities.Add(charityDTO);
+                TestImg.Source = charityDTO.ImageSource;
             }
         }
     }
@@ -55,13 +65,13 @@ public partial class ManageCharitiesPage : ContentPage
     private async void EditCharity(object sender, EventArgs e)
     {
         Button btn = sender as Button;
-        Charity charityToEdit = btn.CommandParameter as Charity;
+        CharityDTO charityToEdit = btn.CommandParameter as CharityDTO;
         if (charityToEdit != null)
         {
             ShellNavigationQueryParameters data = new ShellNavigationQueryParameters()
             {
                 { "PageType", "Edit" },
-                { "CharityToEdit", charityToEdit }
+                { "CharityToEdit", charityToEdit.CharityObj }
             };
             await Shell.Current.GoToAsync("AddEditCharityPage", data);
         }
@@ -74,5 +84,21 @@ public partial class ManageCharitiesPage : ContentPage
             { "PageType", "Add" }
         };
         await Shell.Current.GoToAsync("AddEditCharityPage", data);
+    }
+
+    public class CharityDTO
+    {
+        public Charity CharityObj {  get; set; }
+        public string LogoFilePath { get; set; }
+        public ImageSource ImageSource { 
+        get
+            {
+                if(string.IsNullOrEmpty(LogoFilePath))
+                {
+                    return null;
+                }
+                return ImageSource.FromStream(() => File.OpenRead(LogoFilePath));
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace Session_6_Dennis_Hilfinger
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += timerTick;
             timer.Start();
+            MoveCharityImages();
         }
 
         private void timerTick(object? sender, object e)
@@ -158,6 +159,34 @@ namespace Session_6_Dennis_Hilfinger
             }
         }
 
+        private async void MoveCharityImages()
+        {
+            try
+            {
+                using (var db = new MarathonDB())
+                {
+                    var Charities = db.Charities.ToList();
+                    foreach (var ch in Charities)
+                    {
+
+                        //TODO: fix this to copy every Image MauiAsset to AppDataDirectory
+
+                        /*var stream = await FileSystem.OpenAppPackageFileAsync();
+                        if (stream != null)
+                        {
+                            var outputPath = Path.Combine(FileSystem.AppDataDirectory, ch.CharityLogo);
+                            var outputStream = File.Create(outputPath);
+
+                            await stream.CopyToAsync(outputStream);
+                        }*/
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
 
         private async void BecomeRunner(object sender, EventArgs e)
         {

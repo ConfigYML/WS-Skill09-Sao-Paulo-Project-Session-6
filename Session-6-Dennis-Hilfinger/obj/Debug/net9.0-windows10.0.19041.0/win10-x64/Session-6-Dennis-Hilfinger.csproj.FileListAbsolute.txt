@@ -513,3 +513,17 @@ C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\
 C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Session-6-Dennis-Hilfinger\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt
 C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Session-6-Dennis-Hilfinger\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Session-6-Dennis-Hilfinger\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\arise_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\aves_do_brazil_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\clara_santos_oliveira_institute_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\conquer_cancer_brazil.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\diabetes_brazil_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\heart_health_sao_paulo_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\human_rights_centre_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\oxfam_international_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\querstadtein_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\save_the_children_fund_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\stay_pumped_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\the_red_cross_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\upbeat_logo.png
+C:\2_WorldSkills\Training\Sao_Paulo_2015\WS-Skill09-Sao-Paulo-Project-Session-6\Executable\net9.0-windows10.0.19041.0\win10-x64\Charities\wwsm_rescue_logo.png

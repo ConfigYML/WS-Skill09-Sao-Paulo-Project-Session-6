@@ -55,26 +55,32 @@ HorizontalOptions="Fill">
                     HeightRequest="50"
                     HorizontalOptions="Start"
                     VerticalOptions="Center"/>
+                
+                <Image HeightRequest="100"
+                       WidthRequest="100"
+                       x:Name="TestImg"/>
 
             </VerticalStackLayout>
             <CollectionView
                 ItemsSource="{Binding Charities}"
                 Grid.Row="1"
-                WidthRequest="1000">
+                WidthRequest="1000"
+                x:Name="CharityCollectionView">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid
                             ColumnDefinitions="2*, 2*, 8*, *"
                             ColumnSpacing="10">
                             <Image
-                                Source="{Binding CharityLogo}"
-                                WidthRequest="100"/>
+                                Source="{Binding ImageSource}"
+                                WidthRequest="100"
+                                HeightRequest="100"/>
                             <Label
-                                Text="{Binding CharityName}"
+                                Text="{Binding CharityObj.CharityName}"
                                 Grid.Column="1"
                                 VerticalTextAlignment="Center"/>
                             <Label
-                                Text="{Binding CharityDescription}"
+                                Text="{Binding CharityObj.CharityDescription}"
                                 Grid.Column="2"
                                 VerticalTextAlignment="Center"/>
                             <Button
