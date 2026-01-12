@@ -20,6 +20,12 @@ public partial class ManageCharitiesPage : ContentPage
         timer.Tick += timerTick;
         timer.Start();
         this.BindingContext = this;
+    }
+
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
         LoadData();
     }
 
@@ -42,6 +48,7 @@ public partial class ManageCharitiesPage : ContentPage
 
     private async void LoadData()
     {
+        Charities.Clear();
         using(var db = new MarathonDB())
         {
             var fastList = await db.Charities.ToListAsync();
@@ -52,12 +59,7 @@ public partial class ManageCharitiesPage : ContentPage
                     CharityObj = charity,
                     LogoFilePath = Path.Combine(FileSystem.AppDataDirectory, charity.CharityLogo)
                 };
-                if (File.Exists(charityDTO.LogoFilePath))
-                {
-                    await DisplayAlert("Info", "Image found", "OK");
-                }
                 Charities.Add(charityDTO);
-                TestImg.Source = charityDTO.ImageSource;
             }
         }
     }

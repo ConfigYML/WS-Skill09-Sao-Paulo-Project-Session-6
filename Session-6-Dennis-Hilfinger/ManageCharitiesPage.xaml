@@ -55,10 +55,6 @@ HorizontalOptions="Fill">
                     HeightRequest="50"
                     HorizontalOptions="Start"
                     VerticalOptions="Center"/>
-                
-                <Image HeightRequest="100"
-                       WidthRequest="100"
-                       x:Name="TestImg"/>
 
             </VerticalStackLayout>
             <CollectionView

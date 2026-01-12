@@ -62,9 +62,10 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
             {
                 NameEntry.Text = charityToEdit.CharityName;
                 DescriptionEntry.Text = charityToEdit.CharityDescription;
-                
+
                 //Approach to solve this: save all Charity Images (even MauiImages from app) in FileSystem.AppDataDirectory
-                CurrentLogoImg.Source = ImageSource.FromFile(charityToEdit.CharityLogo);
+                var filepath = Path.Combine(FileSystem.AppDataDirectory, charityToEdit.CharityLogo);
+                CurrentLogoImg.Source = ImageSource.FromFile(filepath);
             }
         }
     }
@@ -102,9 +103,14 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
                         {
                             var filename = Path.GetFileName(newLogoPath);
                             var destPath = Path.Combine(FileSystem.AppDataDirectory, filename);
-                            File.Copy(newLogoPath, destPath);
-                            charity.CharityLogo = filename;
-                            CurrentLogoImg.Source = ImageSource.FromFile(destPath);
+                            if (Path.Exists(destPath)) {
+                                await DisplayAlert("Info", "An image with the same name already exists. Please rename the file and try again.", "Ok");
+                            } else
+                            {
+                                File.Copy(newLogoPath, destPath);
+                                charity.CharityLogo = filename;
+                                CurrentLogoImg.Source = ImageSource.FromFile(destPath);
+                            }
                         } else
                         {
                             await DisplayAlert("Error", "File path for new logo does not exist", "Ok");
@@ -122,13 +128,65 @@ public partial class AddEditCharityPage : ContentPage, IQueryAttributable
             }
             else
             {
-                /*
+                
                 var charity = new Charity();
+
+                var charityName = NameEntry.Text;
+                if (string.IsNullOrEmpty(charityName))
+                {
+                    await DisplayAlert("Info", "Charity Name can not be empty.", "Ok");
+                    return;
+                }
+                charity.CharityName = charityName;
+
+                var charityDescription = DescriptionEntry.Text;
+                if (string.IsNullOrEmpty(charityDescription))
+                {
+                    await DisplayAlert("Info", "Charity Description can not be empty.", "Ok");
+                    return;
+                }
+                charity.CharityDescription = charityDescription;
+
+                var newLogoPath = LogoFileEntry.Text;
+                if (string.IsNullOrEmpty(newLogoPath))
+                {
+                    await DisplayAlert("Info", "Charity Logo needs to be selected.", "Ok");
+                    return;
+                }
+
+                try
+                {
+                    if (Path.Exists(newLogoPath))
+                    {
+                        var filename = Path.GetFileName(newLogoPath);
+                        var destPath = Path.Combine(FileSystem.AppDataDirectory, filename);
+                        if (Path.Exists(destPath))
+                        {
+                            await DisplayAlert("Info", "An image with the same name already exists. Please rename the file and try again.", "Ok");
+                        }
+                        else
+                        {
+                            File.Copy(newLogoPath, destPath);
+                            charity.CharityLogo = filename;
+                            CurrentLogoImg.Source = ImageSource.FromFile(destPath);
+                        }
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", "File path for logo does not exist", "Ok");
+                        return;
+                    }
+                }
+                catch
+                {
+                    await DisplayAlert("Error", "Something went wrong when setting logo.", "Ok");
+                    return;
+                }
 
                 db.Charities.Add(charity);
                 db.SaveChanges();
                 await DisplayAlert("Success", "Charity created successfully.", "OK");
-                Cancel(null, EventArgs.Empty);*/
+                Cancel(null, EventArgs.Empty);
             }
         }
     }

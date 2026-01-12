@@ -170,15 +170,15 @@ namespace Session_6_Dennis_Hilfinger
                     {
 
                         //TODO: fix this to copy every Image MauiAsset to AppDataDirectory
-
-                        /*var stream = await FileSystem.OpenAppPackageFileAsync();
+                        var filename = ch.CharityLogo.Replace(".", ".scale-100.");
+                        var stream = await FileSystem.OpenAppPackageFileAsync(filename);
                         if (stream != null)
                         {
                             var outputPath = Path.Combine(FileSystem.AppDataDirectory, ch.CharityLogo);
                             var outputStream = File.Create(outputPath);
 
                             await stream.CopyToAsync(outputStream);
-                        }*/
+                        }
                     }
                 }
             }
